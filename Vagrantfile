@@ -25,19 +25,22 @@ Vagrant.configure("2") do |config|
     dhcp.vm.provision "shell", path: "./dhcp/provision.sh"
   end
 
-  config.vm.define "client_1" do |client_1|
-    client_1.vm.box = "ubuntu/focal64"
-    client_1.vm.hostname = "C-01"
-    client_1.vm.network "private_network", 
-      type: "dhcp", 
+  config.vm.define "dockerhost" do |dockerhost|
+    dockerhost.vm.box = "ubuntu/focal64"
+    dockerhost.vm.hostname = "S-02-dockerhost"
+    dockerhost.vm.network "private_network", 
+      ip: "192.168.1.5",
       virtualbox__intnet: "internal",
       virtualbox__hostonly: false
 
-    client_1.vm.provider "virtualbox" do |vb|
+    dockerhost.vm.provider "virtualbox" do |vb|
       vb.gui = true
-      vb.name = "VM-C-01"
-      vb.memory = 1024
-      vb.cpus = 1
+      vb.name = "VM-S-02-dockerhost"
+      vb.memory = 2048
+      vb.cpus = 2
     end
+    dockerhost.vm.provision "shell", path: "./docker/provision.sh"
   end
+
+
 end
